@@ -250,7 +250,7 @@ $(document).ready(function () {
         $('#wel').html(`Welcome, <span class="test-3-name">${localStorage.first_name}</span>
                     <span class="test-3-last">${localStorage.last_name}</span>`);
 
-    // функция об информации о пользователе
+        // функция об информации о пользователе
         function name() {
             $.ajax({
                 url: `${host}/api/user`,
@@ -266,6 +266,7 @@ $(document).ready(function () {
                 }
             })
         };
+
 
         //Выделение нужных рейсов в таблице
         $('#to_table tbody').on('click', 'tr', function () {
@@ -484,7 +485,7 @@ $(document).ready(function () {
                 method: 'PATCH',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    passenger: '386',
+                    passenger: 1,
                     seat: '7B',
                     type: 'from/back',
                 }),
@@ -495,25 +496,13 @@ $(document).ready(function () {
         };
 
 
-    // функция информация о рейсе
+        // функция информация о рейсе
         function flight_information(data) {
             let sum = 0;
             $.each(data.data.flights, function (index, value) {
                 let hour = dat(value.from.time, value.to.time, 1);
                 let minutes = dat(value.from.time, value.to.time, 0);
                 sum = sum + value.cost;
-                $('#booking_up').append(`<tr>
-                    <td class="test-5-fc">${value.flight_code}</td>
-                    <td class="test-5-from">${value.from.city}</td>
-                    <td class="d-flex align-items-center">
-                        <input type="date" class="form-control mr-2" value="${value.from.date}">
-                        at
-                        <span class="test-5-dt ml-1">${value.to.time}</span>
-                    </td>
-                    <td class="test-5-to">${value.to.city}</td>
-                    <td class="test-5-at">${hour} ${minutes}</td>
-                    <td class="test-5-fp">${value.cost}</td>
-                </tr>`);
                 $('#flight_information_AF').append(`<tr>
                     <td class="test-6-fc">${value.flight_code}</td>
                     <td class="test-6-ac">Bombardier CRJ200</td>
@@ -531,6 +520,15 @@ $(document).ready(function () {
                     </td>
                 </tr>`)
             })
+            $.each(data.data.passengers, function (index, value){
+                $('#flight_information_pass').append(`<tr>
+                    <td class="test-6-name">${value.first_name}</td>
+                    <td class="test-6-last">${value.last_name}</td>
+                    <td class="test-6-dob">${value.birth_date}</td>
+                    <td class="test-6-doc">${value.document_number}</td>
+                    <td class="test-6-seat">1B</td>
+                </tr>`)
+            })
             $('#booking_up').append(`<tr>
                     <td colspan="5" class="text-right test-5-price">
                         <b>Total cost</b>
@@ -541,7 +539,7 @@ $(document).ready(function () {
         };
 
         $('.add_pas').click(function () {
-            $('#poz').append(` <div></div><div class="col-12 col-sm-6 col-lg-4 col-xl-3 pr-lg-0">
+            $('#poz').append(`<div class="row" id="string"><div></div><div class="col-12 col-sm-6 col-lg-4 col-xl-3 pr-lg-0">
                         <input type="text" class="form-control test-5-name w-100 pass_first_name" placeholder="First name">
                     </div>
                     <div class="col-12 col-sm-6 col-lg-4 mt-3 col-xl-3 mt-sm-0 pr-lg-0">
@@ -554,8 +552,11 @@ $(document).ready(function () {
                         <input type="text" class="form-control test-5-doc pass_document" placeholder="Document number">
                     </div>
                     <div class="col-12 col-xl-2 mt-3 mt-xl-0">
-                        <button class="btn btn-danger btn-sm form-control test-5-bremove">Remove</button>
-                    </div></div>`)
+                        <button class="btn btn-danger btn-sm form-control test-5-bremove remove">Remove</button>
+                    </div></div></div>`)
+        });
+        $('.remove').click(function () {
+            $('#string').remove();
         });
     }
 );
